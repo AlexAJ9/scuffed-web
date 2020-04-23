@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "./loginMutation";
@@ -51,11 +57,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
+  token: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }
-export default function SignIn({ setToken, setErrorMessage }: Props) {
+export default function SignIn({ setToken, setErrorMessage, token }: Props) {
   const classes = useStyles();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -73,11 +81,16 @@ export default function SignIn({ setToken, setErrorMessage }: Props) {
 
   useEffect(() => {
     if (result.data) {
+      console.log("ssasa" + result.data.login.value);
       const token = result.data.login.value;
       setToken(token);
       localStorage.setItem("user-token", token);
     }
   }, [result.data, setToken]);
+
+  if (token) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <Container component="main" maxWidth="xs">

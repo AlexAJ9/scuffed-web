@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 
 import { useMutation } from "@apollo/client";
 import { SIGN_UP } from "./signUpMutations";
@@ -49,8 +50,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+interface Props {
+  token: string | null;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
+}
 
-export default function SignUp() {
+export default function SignUp({ token, setErrorMessage }: Props) {
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -61,6 +66,9 @@ export default function SignUp() {
     e.preventDefault();
     signUp({ variables: { username, password } });
   };
+  if (token) {
+    return <Redirect to="/" />;
+  }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
