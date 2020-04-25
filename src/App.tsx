@@ -8,6 +8,7 @@ import {
 
 import Login from "./components/Login/Login";
 import Status from "./components/status/Status";
+
 import Register from "./components/Register/Register";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 function App() {

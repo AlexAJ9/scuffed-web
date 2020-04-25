@@ -4,9 +4,7 @@ export const All_STATUSES = gql`
   query {
     allStatuses {
       status_text
-      user
-      id
-      stars
+      status_picture_url
     }
   }
 `;
