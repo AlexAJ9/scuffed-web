@@ -8,8 +8,9 @@ import {
 
 import Login from "./components/Login/Login";
 import Status from "./components/status/Status";
-
+import Profile from "./components/Profile/UserProfile";
 import Register from "./components/Register/Register";
+
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 function App() {
   const [token, setToken] = useState<null | string>(null);
@@ -26,7 +27,8 @@ function App() {
   };
   return (
     <Switch>
-      <ProtectedRoute token={token} exact path="/" Component={Status} />
+      <ProtectedRoute token={token} exact path="/" Component={Profile} />
+      <ProtectedRoute token={token} exact path="/profile" Component={Profile} />
       <Route
         exact
         path="/login"
@@ -38,6 +40,7 @@ function App() {
           />
         )}
       />
+
       <Route
         exact
         path="/register"
@@ -48,7 +51,6 @@ function App() {
       <Route component={Register} />
 
       <button onClick={logout}>logout</button>
-      {/* <Status /> */}
     </Switch>
   );
 }

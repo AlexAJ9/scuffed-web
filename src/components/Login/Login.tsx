@@ -81,10 +81,11 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
 
   useEffect(() => {
     if (result.data) {
-      console.log("ssasa" + result.data.login.value);
-      const token = result.data.login.value;
+      console.log("ssasa" + result.data.login.user.id);
+      const token = result.data.login.token;
       setToken(token);
       localStorage.setItem("user-token", token);
+      localStorage.setItem("user-id", result.data.login.user.id);
     }
   }, [result.data, setToken]);
 
