@@ -27,7 +27,7 @@ function App() {
   };
   return (
     <Switch>
-      <ProtectedRoute token={token} exact path="/" Component={Profile} />
+      <ProtectedRoute token={token} exact path="/" Component={Status} />
       <ProtectedRoute token={token} exact path="/profile" Component={Profile} />
       <Route
         exact

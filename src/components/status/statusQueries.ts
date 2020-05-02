@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const All_STATUSES = gql`
   query {
     allStatuses {
+      username
       status_text
       status_picture_url
     }
