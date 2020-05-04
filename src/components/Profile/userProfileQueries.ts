@@ -5,6 +5,9 @@ export const USER_PROFILE = gql`
     getUserInfo(id: $id) {
       id
       username
+      name
+      description
+      profile_image_url
     }
   }
 `;

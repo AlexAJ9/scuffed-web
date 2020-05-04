@@ -46,8 +46,12 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(4),
     },
     componentContainer: {
-      border: "solid 1px",
-      borderColor: "#0000001f",
+      border: "1px solid",
+      borderColor:
+        theme.palette.type === "light"
+          ? "#0000001f !important"
+          : "rgba(255, 255, 255, 0.12)",
+
       height: "100%",
     },
     inline: {

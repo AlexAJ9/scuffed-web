@@ -3,8 +3,9 @@ import { Switch, Route, Link } from "react-router-dom";
 
 import Login from "./components/Login/Login";
 import Status from "./components/status/Status";
-import Profile from "./components/Profile/UserProfile";
 import Register from "./components/Register/Register";
+import Profile from "./components/Profile/UserProfile";
+import Settings from "./components/ProfileSettings/ProfileSettings";
 
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 
@@ -25,12 +26,21 @@ import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";
+import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
+import SettingsIcon from "@material-ui/icons/Settings";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
+    },
+    link: {
+      all: "unset",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: " center",
     },
     appBar: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -65,24 +75,35 @@ const darkTheme = createMuiTheme({
     },
     text: {
       primary: "#fff",
+      secondary: "#1da1f2",
     },
     primary: {
       main: "#1da1f2",
     },
     secondary: {
-      main: "#063255",
+      main: "#1da1f2",
     },
+    type: "dark",
   },
 });
 const lightTheme = createMuiTheme({
   palette: {
+    background: {
+      default: "#fff",
+      paper: "#fff",
+    },
+    text: {
+      primary: "#000000",
+      secondary: "#1da1f2",
+    },
     secondary: {
-      main: "#15202b",
+      main: "#1da1f2",
     },
 
     primary: {
       main: "#1da1f2",
     },
+    type: "light",
   },
 });
 function App() {
@@ -108,6 +129,12 @@ function App() {
       <ThemeProvider theme={theme}>
         <Switch>
           <ProtectedRoute token={token} exact path="/" Component={Status} />
+          <ProtectedRoute
+            token={token}
+            exact
+            path="/settings"
+            Component={Settings}
+          />
           <ProtectedRoute
             token={token}
             exact
@@ -148,54 +175,73 @@ function App() {
           <div className={classes.toolbar} />
           <Divider />
           <List>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: "#1da1f2",
-              }}
-              to="/"
-            >
-              <ListItem button>
+            <ListItem button>
+              <Link to="/" className={classes.link}>
                 <ListItemIcon>
-                  <HomeIcon />
+                  <IconButton>
+                    <HomeIcon color="primary" />
+                  </IconButton>
                 </ListItemIcon>
                 <ListItemText
                   primary={
                     <Typography className={classes.text}>Home</Typography>
                   }
                 />
-              </ListItem>
-            </Link>
+              </Link>
+            </ListItem>
           </List>
           <Divider />
           <List>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: "#1da1f2",
-              }}
-              to="/profile"
-            >
-              <ListItem button>
+            <ListItem className={classes.root} button>
+              <Link className={classes.link} to="/profile">
                 <ListItemIcon>
-                  <PersonIcon />
+                  <IconButton>
+                    <PersonIcon />
+                  </IconButton>
                 </ListItemIcon>
                 <ListItemText
                   primary={
                     <Typography className={classes.text}>Profile</Typography>
                   }
                 />
-              </ListItem>
-            </Link>
+              </Link>
+            </ListItem>
+
             <ListItem onClick={handleChangeTheme} button>
               <ListItemIcon>
                 <IconButton>
-                  <WbIncandescentOutlinedIcon />
+                  <WbIncandescentOutlinedIcon color="secondary" />
                 </IconButton>
               </ListItemIcon>
               <ListItemText
                 primary={
                   <Typography className={classes.text}>Display</Typography>
+                }
+              />
+            </ListItem>
+            <ListItem className={classes.root} button>
+              <Link className={classes.link} to="/settings">
+                <ListItemIcon>
+                  <IconButton>
+                    <SettingsIcon />
+                  </IconButton>
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography className={classes.text}>Settings</Typography>
+                  }
+                />
+              </Link>
+            </ListItem>
+            <ListItem onClick={logout} button>
+              <ListItemIcon>
+                <IconButton>
+                  <ExitToAppOutlinedIcon />
+                </IconButton>
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <Typography className={classes.text}>Log out</Typography>
                 }
               />
             </ListItem>
