@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Image from "material-ui-image";
 
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 
+import { LIKE } from "../Favourites/likeStatusMutation";
 import { USER_PROFILE } from "./userProfileQueries";
 import { All_STATUSES } from "../status/statusQueries";
+import { ADD_FRIEND } from "../Friends/addFriendMutation";
 
 import Header from "../Header/Header";
 import ConfirmDialog from "./ConfirmDialog";
@@ -25,7 +27,11 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import Avatar from "@material-ui/core/Avatar";
+import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
+import PersonAddDisabledOutlinedIcon from "@material-ui/icons/PersonAddDisabledOutlined";
 
 import CreateStatus from "../status/CreateStatus";
 const useStyles = makeStyles((theme: Theme) =>
@@ -73,9 +79,29 @@ export default function Status() {
   };
 
   const all_statuses = useQuery(All_STATUSES);
+
   const id = localStorage.getItem("user-id");
   const userId = useQuery(USER_PROFILE, { variables: { id } });
+  console.log(userId);
 
+  const [like, result] = useMutation(LIKE, {
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  const [friend, friendResult] = useMutation(ADD_FRIEND, {
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  const handleLike = (statusId: string) => {
+    like({ variables: { id: statusId } });
+  };
+  const handleAddFriend = (id: string) => {
+    console.log(id + "id");
+
+    friend({ variables: { id: id } });
+  };
   if (all_statuses.loading) {
     return <div>loading...</div>;
   }
@@ -90,6 +116,15 @@ export default function Status() {
           <Paper className={classes.statusBox} elevation={3}>
             <Typography className={classes.title} variant="h5">
               {x.username}
+              {userId.data?.getUserInfo.friends?.includes(x.userId) ? (
+                <IconButton onClick={() => handleAddFriend(x.userId)}>
+                  <PersonAddDisabledOutlinedIcon />
+                </IconButton>
+              ) : (
+                <IconButton onClick={() => handleAddFriend(x.userId)}>
+                  <PersonAddOutlinedIcon />
+                </IconButton>
+              )}
             </Typography>
             <Typography variant="h6">{x.status_text}</Typography>
             {x.status_picture_url ? (
@@ -99,6 +134,14 @@ export default function Status() {
             )}
 
             <div className={classes.toolbar}>
+              <IconButton onClick={() => handleLike(x.id)}>
+                {userId.data?.getUserInfo.favorites.includes(x.id) ? (
+                  <FavoriteBorderIcon color="secondary" />
+                ) : (
+                  <FavoriteIcon color="secondary" />
+                )}
+              </IconButton>
+
               <IconButton onClick={handleClick}>
                 {open ? <ExpandLess /> : <ExpandMore />}
               </IconButton>

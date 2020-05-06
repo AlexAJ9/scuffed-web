@@ -8,6 +8,7 @@ export const All_STATUSES = gql`
         text
         user
       }
+      userId
       username
       status_text
       status_picture_url

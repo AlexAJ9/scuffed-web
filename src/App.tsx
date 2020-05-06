@@ -28,6 +28,8 @@ import PersonIcon from "@material-ui/icons/Person";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import PeopleOutlineOutlinedIcon from "@material-ui/icons/PeopleOutlineOutlined";
 
 const drawerWidth = 240;
 
@@ -81,7 +83,7 @@ const darkTheme = createMuiTheme({
       main: "#1da1f2",
     },
     secondary: {
-      main: "#1da1f2",
+      main: "#e0245e",
     },
     type: "dark",
   },
@@ -97,7 +99,7 @@ const lightTheme = createMuiTheme({
       secondary: "#1da1f2",
     },
     secondary: {
-      main: "#1da1f2",
+      main: "#e0245e",
     },
 
     primary: {
@@ -129,6 +131,12 @@ function App() {
       <ThemeProvider theme={theme}>
         <Switch>
           <ProtectedRoute token={token} exact path="/" Component={Status} />
+          <ProtectedRoute
+            token={token}
+            exact
+            path="/friends"
+            Component={Status}
+          />
           <ProtectedRoute
             token={token}
             exact
@@ -190,13 +198,13 @@ function App() {
               </Link>
             </ListItem>
           </List>
-          <Divider />
+
           <List>
             <ListItem className={classes.root} button>
               <Link className={classes.link} to="/profile">
                 <ListItemIcon>
                   <IconButton>
-                    <PersonIcon />
+                    <PersonIcon color="primary" />
                   </IconButton>
                 </ListItemIcon>
                 <ListItemText
@@ -206,11 +214,39 @@ function App() {
                 />
               </Link>
             </ListItem>
+            <ListItem className={classes.root} button>
+              <Link className={classes.link} to="/friends">
+                <ListItemIcon>
+                  <IconButton>
+                    <PeopleOutlineOutlinedIcon color="primary" />
+                  </IconButton>
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography className={classes.text}>Friends</Typography>
+                  }
+                />
+              </Link>
+            </ListItem>
+            <ListItem className={classes.root} button>
+              <Link className={classes.link} to="/profile">
+                <ListItemIcon>
+                  <IconButton>
+                    <FavoriteBorderIcon color="primary" />
+                  </IconButton>
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography className={classes.text}>Likes</Typography>
+                  }
+                />
+              </Link>
+            </ListItem>
 
             <ListItem onClick={handleChangeTheme} button>
               <ListItemIcon>
                 <IconButton>
-                  <WbIncandescentOutlinedIcon color="secondary" />
+                  <WbIncandescentOutlinedIcon color="primary" />
                 </IconButton>
               </ListItemIcon>
               <ListItemText
@@ -223,7 +259,7 @@ function App() {
               <Link className={classes.link} to="/settings">
                 <ListItemIcon>
                   <IconButton>
-                    <SettingsIcon />
+                    <SettingsIcon color="primary" />
                   </IconButton>
                 </ListItemIcon>
                 <ListItemText
@@ -236,7 +272,7 @@ function App() {
             <ListItem onClick={logout} button>
               <ListItemIcon>
                 <IconButton>
-                  <ExitToAppOutlinedIcon />
+                  <ExitToAppOutlinedIcon color="primary" />
                 </IconButton>
               </ListItemIcon>
               <ListItemText

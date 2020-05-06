@@ -8,6 +8,8 @@ export const USER_PROFILE = gql`
       name
       description
       profile_image_url
+      favorites
+      friends
     }
   }
 `;
