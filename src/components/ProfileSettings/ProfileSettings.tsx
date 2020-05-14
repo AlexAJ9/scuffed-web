@@ -86,19 +86,28 @@ export default function Status() {
     formData.append("upload_preset", "pxs3cjzn");
 
     let response = null;
-    if (image)
+    if (image) {
       response = await axios.post(
         `https://api.cloudinary.com/v1_1/alexaaj/image/upload`,
         formData
       );
-
+      update({
+        variables: {
+          id: id,
+          name: name,
+          username: username,
+          description: bio,
+          profile_image_url: response?.data.url,
+        },
+      });
+    }
     update({
       variables: {
         id: id,
         name: name,
         username: username,
         description: bio,
-        profile_image_url: response?.data.url,
+        profile_image_url: avatar,
       },
     });
   };

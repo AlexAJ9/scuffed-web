@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Redirect } from "react-router-dom";
-
+import { Redirect, Link } from "react-router-dom";
+import Loader from "react-loader-spinner";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "./loginMutation";
 
@@ -8,9 +8,6 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -22,9 +19,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
+
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -49,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: "10px",
   },
+  loader: {
+    display: "flex",
+    justifyContent: "center",
+    alignIitems: "center",
+    marginTop: "300px",
+  },
 }));
 
 interface Props {
@@ -58,7 +59,7 @@ interface Props {
 }
 export default function SignIn({ setToken, setErrorMessage, token }: Props) {
   const classes = useStyles();
-
+  const [loader, setLoader] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -68,15 +69,17 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
     },
   });
 
-  const handleLogin = (event: any) => {
+  const handleLogin = async (event: any) => {
     event.preventDefault();
-    console.log("logging in with", username, password);
+    setLoader(true);
+    setTimeout(() => {
+      setLoader(false);
+    }, 20000000);
     login({ variables: { username, password } });
   };
 
   useEffect(() => {
     if (result.data) {
-      console.log("ssasa" + result.data.login.user.id);
       const token = result.data.login.token;
       setToken(token);
       localStorage.setItem("user-token", token);
@@ -89,72 +92,71 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form onSubmit={handleLogin} className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            value={username}
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            onChange={({ target }) => setUsername(target.value)}
-          />
-          <TextField
-            variant="outlined"
-            value={password}
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+    <>
+      {loader ? (
+        <div className={classes.loader}>
+          <Loader type="TailSpin" color="#1da1f2" height={80} width={80} />
+        </div>
+      ) : (
+        <>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <div className={classes.paper}>
+              <Avatar className={classes.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Sign in
+              </Typography>
+              <form onSubmit={handleLogin} className={classes.form} noValidate>
+                <TextField
+                  variant="outlined"
+                  value={username}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Username"
+                  name="usernmae"
+                  autoComplete="username"
+                  autoFocus
+                  onChange={({ target }) => setUsername(target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  value={password}
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  onChange={({ target }) => setPassword(target.value)}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Sign In
+                </Button>
+                <Grid container>
+                  <Grid item>
+                    <Link to="/register">"Don't have an account? Sign Up"</Link>
+                  </Grid>
+                </Grid>
+              </form>
+            </div>
+            <Box mt={8}>
+              <Copyright />
+            </Box>
+          </Container>
+        </>
+      )}
+    </>
   );
 }

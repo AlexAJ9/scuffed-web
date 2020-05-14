@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useMutation } from "@apollo/client";
+import { useMutation, useSubscription, useApolloClient } from "@apollo/client";
+
+import { All_STATUSES } from "./statusQueries";
 import { CREATE_STATUS } from "./statusMutations";
+import { STATUS_ADDED } from "./statusSubscriptions";
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import IconButton from "@material-ui/core/IconButton";
@@ -43,15 +46,44 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function CreateStatus() {
   const classes = useStyles();
+  const client = useApolloClient();
   const [image, setImage] = useState<File>();
   const [status_text, setStatusText] = useState("");
 
   const [create, _result] = useMutation(CREATE_STATUS, {
+    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
     },
+    update: (store, response) => {
+      console.log(response.data);
+      updateCacheWith(response.data.addStatus);
+    },
   });
 
+  const updateCacheWith = (addedStatus: any) => {
+    console.log(addedStatus + "sasaas");
+    const includedIn = (set: any, object: any) =>
+      set.map((p: any) => p.id).includes(object.id);
+
+    const dataInStore = client.readQuery({ query: All_STATUSES });
+    console.log(dataInStore);
+    if (!includedIn(dataInStore.allStatuses, addedStatus)) {
+      console.log("sas");
+
+      client.writeQuery({
+        query: All_STATUSES,
+        data: { allPersons: dataInStore.allStatuses.concat(addedStatus) },
+      });
+    }
+  };
+
+  useSubscription(STATUS_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedStatus = subscriptionData.data.addedStatus;
+      updateCacheWith(addedStatus);
+    },
+  });
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const formData = new FormData();
