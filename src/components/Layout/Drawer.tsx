@@ -119,7 +119,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
             </Link>
           </ListItem>
           <ListItem className={classes.root} button>
-            <Link className={classes.link} to="/profile">
+            <Link className={classes.link} to="/likes">
               <ListItemIcon>
                 <IconButton>
                   <FavoriteBorderIcon color="primary" />

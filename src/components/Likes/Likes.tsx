@@ -8,11 +8,13 @@ import { USER_PROFILE } from "../Profile/userProfileQueries";
 import { All_STATUSES } from "../status/statusQueries";
 import { ADD_FRIEND } from "../Friends/addFriendMutation";
 
+import Header from "../Header/Header";
 import ConfirmDialog from "../Profile/ConfirmDialog";
 import AddCommentDialog from "../Profile/AddCommentDialog";
 import EditStatus from "../common/EditStatusDialog";
 
 import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
@@ -30,12 +32,8 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import Avatar from "@material-ui/core/Avatar";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import PersonAddDisabledOutlinedIcon from "@material-ui/icons/PersonAddDisabledOutlined";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 
+import CreateStatus from "../status/CreateStatus";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     statusBox: {
@@ -44,17 +42,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       fontWeight: "bold",
+      padding: "10px",
     },
     root: {
-      paddingTop: "10px",
       width: "100%",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
+      maxWidth: 360,
       backgroundColor: theme.palette.background.paper,
-    },
-    card: {
-      width: "80%",
     },
     nested: {
       paddingLeft: theme.spacing(4),
@@ -78,10 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface Props {
-  status: any;
-}
-export default function Status({ status }: Props) {
+export default function Status() {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
 
@@ -96,13 +86,11 @@ export default function Status({ status }: Props) {
   console.log(userId);
 
   const [like, result] = useMutation(LIKE, {
-    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
     },
   });
   const [friend, friendResult] = useMutation(ADD_FRIEND, {
-    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
     },
@@ -120,77 +108,80 @@ export default function Status({ status }: Props) {
   }
 
   return (
-    <div className={classes.root}>
-      <Card className={classes.card}>
-        <CardActionArea>
-          <CardMedia>
-            {status.status_picture_url ? (
-              <Image src={status.status_picture_url} />
+    <Container className={classes.componentContainer} maxWidth="sm">
+      <Header title={"Likes"} />
+
+      {all_statuses.data.allStatuses
+        .filter((status: any) =>
+          userId.data?.getUserInfo.favorites.includes(status.id)
+        )
+        .map((x: any) => (
+          <Paper className={classes.statusBox} elevation={3}>
+            <Typography className={classes.title} variant="h5">
+              {x.username}
+              {userId.data?.getUserInfo.friends?.includes(x.userId) ? (
+                <IconButton onClick={() => handleAddFriend(x.userId)}>
+                  <PersonAddDisabledOutlinedIcon />
+                </IconButton>
+              ) : (
+                <IconButton onClick={() => handleAddFriend(x.userId)}>
+                  <PersonAddOutlinedIcon />
+                </IconButton>
+              )}
+            </Typography>
+            <Typography variant="h6">{x.status_text}</Typography>
+            {x.status_picture_url ? (
+              <Image src={x.status_picture_url} />
             ) : (
               <></>
             )}
-          </CardMedia>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {status.username}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {status.status_text}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions>
-          <IconButton onClick={() => handleLike(status.id)}>
-            {userId.data?.getUserInfo.favorites.includes(status.id) ? (
-              <FavoriteIcon color="secondary" />
-            ) : (
-              <FavoriteBorderIcon color="secondary" />
-            )}
-          </IconButton>
 
-          <IconButton onClick={handleClick}>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-          {console.log(status)}
-          {userId.data?.getUserInfo.id === status.userId ? (
-            <ConfirmDialog id={status.id} />
-          ) : (
-            <></>
-          )}
+            <div className={classes.toolbar}>
+              <IconButton onClick={() => handleLike(x.id)}>
+                {userId.data?.getUserInfo.favorites.includes(x.id) ? (
+                  <FavoriteBorderIcon color="secondary" />
+                ) : (
+                  <FavoriteIcon color="secondary" />
+                )}
+              </IconButton>
 
-          <AddCommentDialog
-            id={status.id}
-            username={status.username}
-            text={status.status_text}
-          />
-          {userId.data?.getUserInfo.id === status.userId ? (
-            <EditStatus id={status.id} text={status.status_text} />
-          ) : (
-            <></>
-          )}
-        </CardActions>
-        <List component="div" disablePadding>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            {status.comments?.map((comment: any) => (
-              <ListItem button className={classes.nested}>
-                <Divider variant="inset" component="li" />
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar
-                      alt="Cindy Baker"
-                      src="/static/images/avatar/3.jpg"
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={comment.user}
-                    secondary={<React.Fragment>{comment.text}</React.Fragment>}
-                  />
-                </ListItem>
-              </ListItem>
-            ))}
-          </Collapse>
-        </List>
-      </Card>
-    </div>
+              <IconButton onClick={handleClick}>
+                {open ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+              <ConfirmDialog id={x.id} />
+              <AddCommentDialog
+                id={x.id}
+                username={x.username}
+                text={x.status_text}
+              />
+              <EditStatus id={x.id} text={x.status_text} />
+            </div>
+
+            <List component="div" disablePadding>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                {x.comments?.map((comment: any) => (
+                  <ListItem button className={classes.nested}>
+                    <Divider variant="inset" component="li" />
+                    <ListItem alignItems="flex-start">
+                      <ListItemAvatar>
+                        <Avatar
+                          alt="Cindy Baker"
+                          src="/static/images/avatar/3.jpg"
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={comment.user}
+                        secondary={
+                          <React.Fragment>{comment.text}</React.Fragment>
+                        }
+                      />
+                    </ListItem>
+                  </ListItem>
+                ))}
+              </Collapse>
+            </List>
+          </Paper>
+        ))}
+    </Container>
   );
 }

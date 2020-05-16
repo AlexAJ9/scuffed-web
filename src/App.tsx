@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
 import Login from "./components/Login/Login";
+import Likes from "./components/Likes/Likes";
+import Friends from "./components/Friends/Friends";
 import Home from "./components/Home/Home";
 import Register from "./components/Register/Register";
 import Profile from "./components/Profile/UserProfile";
@@ -12,9 +15,19 @@ import CurrnetUser from "./components/Layout/CurrentUser";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { ThemeProvider } from "@material-ui/styles";
+import { ThemeProvider, makeStyles } from "@material-ui/styles";
+
 import { createMuiTheme } from "@material-ui/core/styles";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+
+const useStyles = makeStyles((theme) => ({
+  loader: {
+    display: "flex",
+    justifyContent: "center",
+    alignIitems: "center",
+    marginTop: "300px",
+  },
+}));
 
 const darkTheme = createMuiTheme({
   palette: {
@@ -56,6 +69,8 @@ const lightTheme = createMuiTheme({
   },
 });
 function App() {
+  const classes = useStyles();
+  const [loader, setLoader] = useState(false);
   const [theme, setTheme] = useState(lightTheme);
   const [token, setToken] = useState<null | string>(null);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
@@ -73,6 +88,13 @@ function App() {
   };
   return (
     <>
+      {loader ? (
+        <div className={classes.loader}>
+          <Loader type="TailSpin" color="#1da1f2" height={80} width={80} />
+        </div>
+      ) : (
+        <></>
+      )}
       <ThemeProvider theme={theme}>
         <Switch>
           <ProtectedRoute token={token} exact path="/" Component={Home} />
@@ -80,7 +102,7 @@ function App() {
             token={token}
             exact
             path="/friends"
-            Component={Home}
+            Component={Friends}
           />
           <ProtectedRoute
             token={token}
@@ -94,6 +116,7 @@ function App() {
             path="/profile"
             Component={Profile}
           />
+          <ProtectedRoute token={token} exact path="/likes" Component={Likes} />
           <Route
             exact
             path="/login"

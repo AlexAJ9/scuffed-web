@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useMutation, useSubscription, useApolloClient } from "@apollo/client";
+import {
+  useQuery,
+  useMutation,
+  useSubscription,
+  useApolloClient,
+} from "@apollo/client";
 
+import { USER_PROFILE } from "../Profile/userProfileQueries";
 import { All_STATUSES } from "./statusQueries";
 import { CREATE_STATUS } from "./statusMutations";
 import { STATUS_ADDED } from "./statusSubscriptions";
@@ -47,8 +53,21 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function CreateStatus() {
   const classes = useStyles();
   const client = useApolloClient();
+
+  const id = localStorage.getItem("user-id");
+  const user = useQuery(USER_PROFILE, { variables: { id } });
+
   const [image, setImage] = useState<File>();
   const [status_text, setStatusText] = useState("");
+  const [username, setUsername] = useState(user.data?.getUserInfo.username);
+  const [avatar, setAvatar] = useState(
+    user.data?.getUserInfo.profile_image_url
+  );
+
+  useEffect(() => {
+    setUsername(user.data?.getUserInfo.username);
+    setAvatar(user.data?.getUserInfo.profile_image_url);
+  }, [user]);
 
   const [create, _result] = useMutation(CREATE_STATUS, {
     refetchQueries: [{ query: All_STATUSES }],
@@ -108,18 +127,14 @@ export default function CreateStatus() {
     <Container className={classes.box}>
       <form noValidate autoComplete="off">
         <div className={classes.content}>
-          <Avatar
-            className={classes.flexItem}
-            alt="Remy Sharp"
-            src="/static/images/avatar/1.jpg"
-          />
+          <Avatar className={classes.flexItem} alt="user" src={`${avatar}`} />
           <TextField
             className={classes.flexItem}
             fullWidth
             value={status_text}
             onChange={({ target }) => setStatusText(target.value)}
             id="outlined-textarea"
-            placeholder="What's happening?"
+            placeholder={`What's happening, ${username}?`}
             multiline
           />
         </div>
@@ -145,7 +160,7 @@ export default function CreateStatus() {
           <div className={classes.itemEnd}>
             <Button
               size="small"
-              variant="contained"
+              variant="outlined"
               color="primary"
               onClick={handleSubmit}
             >

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE } from "../status/statusMutations";
+import { All_STATUSES } from "../status/statusQueries";
 
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
@@ -57,6 +58,7 @@ export default function DeleteDialog({ id, text }: Props) {
   const [statusText, setStatusText] = useState(text);
 
   const [update, result] = useMutation(UPDATE, {
+    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
     },

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
           ? "#0000001f !important"
           : "rgba(255, 255, 255, 0.12)",
 
-      height: "100vh",
+      height: "100%",
     },
     inline: {
       display: "inline",

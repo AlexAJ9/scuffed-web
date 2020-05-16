@@ -69,6 +69,7 @@ export default function Status() {
   const [bio, setBio] = useState(user.data?.getUserInfo.description);
   const [image, setImage] = useState<File>();
   const [update, result] = useMutation(EDIT_USER, {
+    refetchQueries: [{ query: USER_PROFILE, variables: { id: id } }],
     onError: (error) => {
       console.log(error);
     },
@@ -113,7 +114,7 @@ export default function Status() {
   };
   return (
     <Container className={classes.componentContainer} maxWidth="sm">
-      <Header title={"Settings"} />
+      <Header title={"Edit profile"} />
 
       <Grid container spacing={4}>
         <Grid item xs={12} className={classes.avatar}>

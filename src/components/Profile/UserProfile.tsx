@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       fontWeight: "bold",
+      padding: "10px",
     },
     root: {
       width: "100%",
@@ -110,6 +111,9 @@ export default function Status() {
     <Container className={classes.componentContainer} maxWidth="sm">
       <Header title={"Profile"} />
       <CreateStatus />
+      <Typography variant="h5" gutterBottom className={classes.title}>
+        Your posts
+      </Typography>
       {all_statuses.data.allStatuses
         .filter((status: any) => status.userId !== userId)
         .map((x: any) => (

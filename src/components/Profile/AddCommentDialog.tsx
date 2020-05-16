@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 
 import { COMMENT } from "../status/statusMutations";
+import { All_STATUSES } from "../status/statusQueries";
 
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -19,10 +20,11 @@ interface Props {
   username: string;
   text: string;
 }
-export default function DeleteDialog({ id, username, text }: Props) {
+export default function CommnetDialog({ id, username, text }: Props) {
   const [open, setOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comment, result] = useMutation(COMMENT, {
+    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
     },

@@ -12,6 +12,7 @@ export const All_STATUSES = gql`
       username
       status_text
       status_picture_url
+      stars
     }
   }
 `;
