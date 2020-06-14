@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import Image from "material-ui-image";
 
-import { useQuery, useMutation } from "@apollo/client";
+import {
+  useQuery,
+  useMutation,
+  useSubscription,
+  useApolloClient,
+} from "@apollo/client";
 
-import { LIKE } from "../Favourites/likeStatusMutation";
+import { LIKE, ADD_LIKE } from "./statusMutations";
 import { USER_PROFILE } from "../Profile/userProfileQueries";
 import { All_STATUSES } from "../status/statusQueries";
 import { ADD_FRIEND } from "../Friends/addFriendMutation";
@@ -83,6 +88,7 @@ interface Props {
 }
 export default function Status({ status }: Props) {
   const classes = useStyles();
+
   const [open, setOpen] = useState(true);
 
   const handleClick = () => {
@@ -93,7 +99,6 @@ export default function Status({ status }: Props) {
 
   const id = localStorage.getItem("user-id");
   const userId = useQuery(USER_PROFILE, { variables: { id } });
-  console.log(userId);
 
   const [like, result] = useMutation(LIKE, {
     refetchQueries: [{ query: All_STATUSES }],
@@ -115,6 +120,7 @@ export default function Status({ status }: Props) {
 
     friend({ variables: { id: id } });
   };
+
   if (all_statuses.loading) {
     return <div>loading...</div>;
   }
@@ -151,7 +157,7 @@ export default function Status({ status }: Props) {
           <IconButton onClick={handleClick}>
             {open ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
-          {console.log(status)}
+
           {userId.data?.getUserInfo.id === status.userId ? (
             <ConfirmDialog id={status.id} />
           ) : (

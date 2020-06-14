@@ -33,3 +33,60 @@ export const UPDATE = gql`
     }
   }
 `;
+
+export const STATUS_ADDED = gql`
+  subscription {
+    newStatus {
+      id
+      status_text
+      status_picture_url
+      comments {
+        user
+        text
+      }
+      userId
+      username
+      likes
+    }
+  }
+`;
+export const ADD_COMMENT = gql`
+  subscription {
+    addComment {
+      id
+      status_text
+      status_picture_url
+      comments {
+        user
+        text
+      }
+      userId
+      username
+      likes
+    }
+  }
+`;
+export const LIKE = gql`
+  mutation likeStatus($id: String!) {
+    likesStatus(id: $id) {
+      id
+      likes
+    }
+  }
+`;
+export const ADD_LIKE = gql`
+  subscription {
+    likeStatus {
+      id
+      status_text
+      status_picture_url
+      comments {
+        user
+        text
+      }
+      userId
+      username
+      likes
+    }
+  }
+`;

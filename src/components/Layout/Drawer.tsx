@@ -12,6 +12,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
+import MessageOutlinedIcon from "@material-ui/icons/MessageOutlined";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -115,6 +116,18 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
                 primary={
                   <Typography className={classes.text}>Friends</Typography>
                 }
+              />
+            </Link>
+          </ListItem>
+          <ListItem className={classes.root} button>
+            <Link className={classes.link} to="/chat">
+              <ListItemIcon>
+                <IconButton>
+                  <MessageOutlinedIcon color="primary" />
+                </IconButton>
+              </ListItemIcon>
+              <ListItemText
+                primary={<Typography className={classes.text}>Chat</Typography>}
               />
             </Link>
           </ListItem>

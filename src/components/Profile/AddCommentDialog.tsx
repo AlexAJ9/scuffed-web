@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import { useMutation } from "@apollo/client";
+import { useMutation, useSubscription, useApolloClient } from "@apollo/client";
 
-import { COMMENT } from "../status/statusMutations";
+import { COMMENT, ADD_COMMENT } from "../status/statusMutations";
 import { All_STATUSES } from "../status/statusQueries";
 
 import Button from "@material-ui/core/Button";
@@ -21,14 +21,16 @@ interface Props {
   text: string;
 }
 export default function CommnetDialog({ id, username, text }: Props) {
+  const client = useApolloClient();
   const [open, setOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
+
   const [comment, result] = useMutation(COMMENT, {
-    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
     },
   });
+
   const handleClickOpen = () => {
     setOpen(true);
   };

@@ -13,7 +13,7 @@ import Drawer from "./components/Layout/Drawer";
 import NewDrawer from "./components/Layout/NewDrawer";
 import CurrnetUser from "./components/Layout/CurrentUser";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
-
+import Chat from "./components/Chat/Chat";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider, makeStyles } from "@material-ui/styles";
 
@@ -104,6 +104,7 @@ function App() {
             path="/friends"
             Component={Friends}
           />
+          <ProtectedRoute token={token} exact path="/chat" Component={Chat} />
           <ProtectedRoute
             token={token}
             exact

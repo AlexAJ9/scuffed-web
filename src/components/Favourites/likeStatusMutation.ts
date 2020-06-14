@@ -1,10 +1,26 @@
 import { gql } from "@apollo/client";
 
 export const LIKE = gql`
-  mutation starStatus($id: String!) {
-    starStatus(id: $id) {
+  mutation likeStatus($id: String!) {
+    likesStatus(id: $id) {
       id
-      stars
+      likes
+    }
+  }
+`;
+export const ADD_LIKE = gql`
+  subscription {
+    likeStatus {
+      id
+      status_text
+      status_picture_url
+      comments {
+        user
+        text
+      }
+      userId
+      username
+      likes
     }
   }
 `;

@@ -1,10 +1,9 @@
 import React from "react";
 import Image from "material-ui-image";
 import { useQuery } from "@apollo/client";
-import { useMutation } from "@apollo/client";
 import CreateStatus from "./CreateStatus";
 import { All_STATUSES } from "./statusQueries";
-import { COMMENT } from "./statusMutations";
+
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
@@ -27,15 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Status() {
   const classes = useStyles();
   const all_statuses = useQuery(All_STATUSES);
-  const [comment, result] = useMutation(COMMENT, {
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
-  if (all_statuses.loading) {
-    return <div>loading...</div>;
-  }
 
   return (
     <Container maxWidth="sm">

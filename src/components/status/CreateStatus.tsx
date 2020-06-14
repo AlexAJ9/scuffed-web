@@ -9,8 +9,8 @@ import {
 
 import { USER_PROFILE } from "../Profile/userProfileQueries";
 import { All_STATUSES } from "./statusQueries";
-import { CREATE_STATUS } from "./statusMutations";
-import { STATUS_ADDED } from "./statusSubscriptions";
+import { CREATE_STATUS, STATUS_ADDED } from "./statusMutations";
+// import { STATUS_ADDED } from "./statusSubscriptions";
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import IconButton from "@material-ui/core/IconButton";
@@ -70,39 +70,32 @@ export default function CreateStatus() {
   }, [user]);
 
   const [create, _result] = useMutation(CREATE_STATUS, {
-    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       console.log(error);
-    },
-    update: (store, response) => {
-      console.log(response.data);
-      updateCacheWith(response.data.addStatus);
     },
   });
 
   const updateCacheWith = (addedStatus: any) => {
-    console.log(addedStatus + "sasaas");
     const includedIn = (set: any, object: any) =>
       set.map((p: any) => p.id).includes(object.id);
 
     const dataInStore = client.readQuery({ query: All_STATUSES });
-    console.log(dataInStore);
     if (!includedIn(dataInStore.allStatuses, addedStatus)) {
-      console.log("sas");
+      console.log(dataInStore.allStatuses);
 
       client.writeQuery({
         query: All_STATUSES,
-        data: { allPersons: dataInStore.allStatuses.concat(addedStatus) },
+        data: { allStatuses: dataInStore.allStatuses.concat(addedStatus) },
       });
     }
   };
 
   useSubscription(STATUS_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      const addedStatus = subscriptionData.data.addedStatus;
-      updateCacheWith(addedStatus);
+      updateCacheWith(subscriptionData.data.newStatus);
     },
   });
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const formData = new FormData();
@@ -123,6 +116,7 @@ export default function CreateStatus() {
       },
     });
   };
+
   return (
     <Container className={classes.box}>
       <form noValidate autoComplete="off">
