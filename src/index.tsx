@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import { setContext } from "apollo-link-context";
+import { SnackbarProvider } from "notistack";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/link-ws";
 import {
@@ -52,7 +53,20 @@ const client = new ApolloClient({
 ReactDOM.render(
   <ApolloProvider client={client}>
     <Router>
-      <App />
+      <SnackbarProvider
+        iconVariant={{
+          success: "✅",
+          error: "✖️",
+          warning: "⚠️",
+          info: "ℹ️",
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <App />
+      </SnackbarProvider>
     </Router>
   </ApolloProvider>,
   document.getElementById("root")

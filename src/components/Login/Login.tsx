@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Redirect, Link } from "react-router-dom";
-import Loader from "react-loader-spinner";
+import { useSnackbar } from "notistack";
+
+import Loader from "../Loader/Loader";
+
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "./loginMutation";
 
@@ -18,20 +21,27 @@ import Container from "@material-ui/core/Container";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-
+      {"Ту-Варна © "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    background: "linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%)",
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+  },
   paper: {
+    background: "#fff",
     marginTop: "100px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "25px",
+    padding: "30px",
   },
   avatar: {
     margin: "10px",
@@ -42,13 +52,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px",
   },
   submit: {
-    margin: "10px",
-  },
-  loader: {
-    display: "flex",
-    justifyContent: "center",
-    alignIitems: "center",
-    marginTop: "300px",
+    marginTop: "10px",
+    marginBottom: "10px",
   },
 }));
 
@@ -59,15 +64,27 @@ interface Props {
 }
 export default function SignIn({ setToken, setErrorMessage, token }: Props) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
   const [loader, setLoader] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [login, result] = useMutation(LOGIN, {
-    onError: (error) => {
-      setErrorMessage(error.graphQLErrors[0].message);
-    },
-  });
+  const [login, { data: result, loading: mutationLoading }] = useMutation(
+    LOGIN,
+    {
+      onCompleted(data) {
+        enqueueSnackbar(`Welcome ${data.login.user.username}!`, {
+          variant: "success",
+        });
+      },
+      onError(error) {
+        enqueueSnackbar("Грешно име или парола. Пробвайте отновo!", {
+          variant: "error",
+        });
+      },
+    }
+  );
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
@@ -79,84 +96,85 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
   };
 
   useEffect(() => {
-    if (result.data) {
-      const token = result.data.login.token;
+    if (result) {
+      const token = result.login.token;
       setToken(token);
       localStorage.setItem("user-token", token);
-      localStorage.setItem("user-id", result.data.login.user.id);
+      localStorage.setItem("user-id", result.login.user.id);
     }
-  }, [result.data, setToken]);
+  }, [result, setToken]);
 
   if (token) {
     return <Redirect to="/" />;
   }
 
   return (
-    <>
-      {loader ? (
-        <div className={classes.loader}>
-          <Loader type="TailSpin" color="#1da1f2" height={80} width={80} />
-        </div>
-      ) : (
-        <>
-          <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-              <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Sign in
-              </Typography>
-              <form onSubmit={handleLogin} className={classes.form} noValidate>
-                <TextField
-                  variant="outlined"
-                  value={username}
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Username"
-                  name="usernmae"
-                  autoComplete="username"
-                  autoFocus
-                  onChange={({ target }) => setUsername(target.value)}
-                />
-                <TextField
-                  variant="outlined"
-                  value={password}
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={({ target }) => setPassword(target.value)}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  Sign In
-                </Button>
-                <Grid container>
-                  <Grid item>
-                    <Link to="/register">"Don't have an account? Sign Up"</Link>
-                  </Grid>
+    <div className={classes.root}>
+      {mutationLoading ? <Loader /> : null}
+      <>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Вход
+            </Typography>
+            <form onSubmit={handleLogin} className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                value={username}
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Потребителско име"
+                name="usernmae"
+                autoComplete="username"
+                autoFocus
+                onChange={({ target }) => setUsername(target.value)}
+              />
+              <TextField
+                variant="outlined"
+                value={password}
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Парола"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={({ target }) => setPassword(target.value)}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Влез
+              </Button>
+              <Grid container>
+                <Grid item>
+                  <Link
+                    style={{ textDecoration: "none", color: "black" }}
+                    to="/register"
+                  >
+                    Нямаш акаунт? Регистрирай се! 😉
+                  </Link>
                 </Grid>
-              </form>
-            </div>
+              </Grid>
+            </form>
             <Box mt={8}>
               <Copyright />
             </Box>
-          </Container>
-        </>
-      )}
-    </>
+          </div>
+        </Container>
+      </>
+      )
+    </div>
   );
 }

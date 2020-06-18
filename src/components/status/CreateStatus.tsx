@@ -11,6 +11,7 @@ import { USER_PROFILE } from "../Profile/userProfileQueries";
 import { All_STATUSES } from "./statusQueries";
 import { CREATE_STATUS, STATUS_ADDED } from "./statusMutations";
 // import { STATUS_ADDED } from "./statusSubscriptions";
+import { useSnackbar } from "notistack";
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import IconButton from "@material-ui/core/IconButton";
@@ -53,6 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function CreateStatus() {
   const classes = useStyles();
   const client = useApolloClient();
+  const { enqueueSnackbar } = useSnackbar();
 
   const id = localStorage.getItem("user-id");
   const user = useQuery(USER_PROFILE, { variables: { id } });
@@ -92,6 +94,7 @@ export default function CreateStatus() {
 
   useSubscription(STATUS_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
+      enqueueSnackbar("Successfully created a post!", { variant: "success" });
       updateCacheWith(subscriptionData.data.newStatus);
     },
   });

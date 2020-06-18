@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
+import { useSnackbar } from "notistack";
+
+import Loader from "../Loader/Loader";
 
 import { useMutation } from "@apollo/client";
 import { SIGN_UP } from "./signUpMutations";
@@ -18,18 +21,27 @@ import Container from "@material-ui/core/Container";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
+      {"Ту-Варна © "}
       {new Date().getFullYear()}
     </Typography>
   );
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    background: "linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%)",
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+  },
   paper: {
+    background: "#fff",
     marginTop: "100px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "25px",
+    padding: "20px",
   },
   avatar: {
     margin: "10px",
@@ -50,10 +62,22 @@ interface Props {
 
 export default function SignUp({ token, setErrorMessage }: Props) {
   const classes = useStyles();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
 
-  const [signUp] = useMutation(SIGN_UP);
+  const [signUp, { loading: mutationLoading }] = useMutation(SIGN_UP, {
+    onCompleted() {
+      enqueueSnackbar("Успех! Вече имаш акаунт! 🙂", {
+        variant: "success",
+      });
+    },
+    onError(error) {
+      enqueueSnackbar("Възникна проблем. Пробвайте отново!", {
+        variant: "error",
+      });
+    },
+  });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -63,64 +87,76 @@ export default function SignUp({ token, setErrorMessage }: Props) {
     return <Redirect to="/" />;
   }
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <form onSubmit={handleSubmit} className={classes.form} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                value={username}
-                onChange={({ target }) => setUsername(target.value)}
-                variant="outlined"
-                required
-                fullWidth
-                id="username"
-                label="Username "
-                name="username"
-                autoComplete="username"
-              />
+    <div className={classes.root}>
+      {mutationLoading ? <Loader /> : null}
+
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Регистрация
+          </Typography>
+          <Typography component="h1" variant="h6">
+            Много бързо и много лесно е.
+          </Typography>
+          <form onSubmit={handleSubmit} className={classes.form} noValidate>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  value={username}
+                  onChange={({ target }) => setUsername(target.value)}
+                  variant="outlined"
+                  required={true}
+                  fullWidth
+                  id="username"
+                  label="Потребителско име"
+                  name="username"
+                  autoComplete="username"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  value={password}
+                  onChange={({ target }) => setPassword(target.value)}
+                  variant="outlined"
+                  required={true}
+                  fullWidth
+                  name="password"
+                  label="Парола"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                value={password}
-                onChange={({ target }) => setPassword(target.value)}
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Регистрация
+            </Button>
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link
+                  style={{ textDecoration: "none", color: "black" }}
+                  to="/login"
+                >
+                  Вече имаш акаунт? Влез от тук! 👈
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign Up
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link to="/login">Already have an account? Sign in</Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
+          </form>
+          <Box mt={5}>
+            <Copyright />
+          </Box>
+        </div>
+      </Container>
+    </div>
   );
 }

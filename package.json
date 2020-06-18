@@ -19,6 +19,7 @@
     "axios": "^0.19.2",
     "graphql": "^15.0.0",
     "material-ui-image": "^3.2.3",
+    "notistack": "^0.9.17",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-loader-spinner": "^3.1.14",

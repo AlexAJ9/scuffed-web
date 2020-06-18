@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { useQuery } from "@apollo/client";
 
 import { All_STATUSES } from "../status/statusQueries";
-
+import Search from "../Search/Search";
 import Header from "../Header/Header";
 import SingleStatus from "../status/SingleStatus";
 
@@ -51,6 +51,7 @@ export default function Status() {
   const classes = useStyles();
 
   const all_statuses = useQuery(All_STATUSES);
+  const [filter, setFilter] = useState("");
 
   if (all_statuses.loading) {
     return <div>loading...</div>;
@@ -60,9 +61,12 @@ export default function Status() {
     <Container className={classes.componentContainer} maxWidth="sm">
       <Header title={"Home"} />
       <CreateStatus />
-      {all_statuses.data.allStatuses.map((x: any) => (
-        <SingleStatus status={x} />
-      ))}
+      <Search filter={filter} setFilter={setFilter} />
+      {all_statuses.data.allStatuses
+        .filter((x: any) => (filter !== "" ? x.status_text === filter : x))
+        .map((x: any) => (
+          <SingleStatus status={x} />
+        ))}
     </Container>
   );
 }
