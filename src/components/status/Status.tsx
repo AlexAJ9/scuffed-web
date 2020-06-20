@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Image from "material-ui-image";
 import { useQuery } from "@apollo/client";
 
-import CreateStatus from "./CreateStatus";
 import { All_STATUSES } from "./statusQueries";
 
 import Typography from "@material-ui/core/Typography";
@@ -43,7 +42,6 @@ export default function Status() {
           {x.status_picture_url ? <Image src={x.status_picture_url} /> : <></>}
         </Paper>
       ))}
-      <CreateStatus />
     </Container>
   );
 }

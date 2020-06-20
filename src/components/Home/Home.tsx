@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { useQuery } from "@apollo/client";
 
@@ -10,7 +10,6 @@ import SingleStatus from "../status/SingleStatus";
 import Container from "@material-ui/core/Container";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
-import CreateStatus from "../status/CreateStatus";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     statusBox: {
@@ -30,10 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     componentContainer: {
       border: "1px solid",
-      borderColor:
-        theme.palette.type === "light"
-          ? "#0000001f !important"
-          : "rgba(255, 255, 255, 0.12)",
+      borderColor: "#25a9f066",
 
       height: "100%",
     },
@@ -59,11 +55,13 @@ export default function Status() {
 
   return (
     <Container className={classes.componentContainer} maxWidth="sm">
-      <Header title={"Home"} />
-      <CreateStatus />
+      <Header title={"Начало"} />
+
       <Search filter={filter} setFilter={setFilter} />
       {all_statuses.data.allStatuses
-        .filter((x: any) => (filter !== "" ? x.status_text === filter : x))
+        .filter((x: any) =>
+          filter !== "" ? x.status_text.includes(filter) : x
+        )
         .map((x: any) => (
           <SingleStatus status={x} />
         ))}

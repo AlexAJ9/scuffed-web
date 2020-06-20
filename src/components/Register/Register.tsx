@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     background: "#fff",
-    marginTop: "100px",
+    marginTop: "90px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -63,9 +63,9 @@ interface Props {
 export default function SignUp({ token, setErrorMessage }: Props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState();
-
+  const [confirmPassword, setConfirmPassword] = useState();
   const [signUp, { loading: mutationLoading }] = useMutation(SIGN_UP, {
     onCompleted() {
       enqueueSnackbar("Успех! Вече имаш акаунт! 🙂", {
@@ -81,7 +81,16 @@ export default function SignUp({ token, setErrorMessage }: Props) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    signUp({ variables: { username, password } });
+    if (password !== undefined && password.length < 6) {
+      enqueueSnackbar("Паролaта трябва да е поне 6 знака. Пробвайте отново!", {
+        variant: "error",
+      });
+    } else if (password === confirmPassword)
+      signUp({ variables: { username, password } });
+    else
+      enqueueSnackbar("Паролите не съпвадат. Пробвайте отново!", {
+        variant: "error",
+      });
   };
   if (token) {
     return <Redirect to="/" />;
@@ -102,7 +111,7 @@ export default function SignUp({ token, setErrorMessage }: Props) {
           <Typography component="h1" variant="h6">
             Много бързо и много лесно е.
           </Typography>
-          <form onSubmit={handleSubmit} className={classes.form} noValidate>
+          <form onSubmit={handleSubmit} className={classes.form}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -131,6 +140,20 @@ export default function SignUp({ token, setErrorMessage }: Props) {
                   autoComplete="current-password"
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  value={confirmPassword}
+                  onChange={({ target }) => setConfirmPassword(target.value)}
+                  variant="outlined"
+                  required={true}
+                  fullWidth
+                  name="password"
+                  label="Повтори парола"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
+              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -144,7 +167,11 @@ export default function SignUp({ token, setErrorMessage }: Props) {
             <Grid container justify="flex-end">
               <Grid item>
                 <Link
-                  style={{ textDecoration: "none", color: "black" }}
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                    fontSize: "16px",
+                  }}
                   to="/login"
                 >
                   Вече имаш акаунт? Влез от тук! 👈

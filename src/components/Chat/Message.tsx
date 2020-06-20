@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-
-import TextField from "@material-ui/core/TextField";
+import React, { useState, useRef } from "react";
 import {
   useQuery,
   useMutation,
@@ -12,10 +10,29 @@ import {
   CREATE_MESSAGE_MUTATION,
   MESSAGE_SUBSCRIPTION,
 } from "./chatQueries";
+
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
+import Paper from "@material-ui/core/Paper";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    sender: {
+      display: "flex",
+      justifyContent: "flex-end",
+    },
+    receiver: { display: "flex", justifyContent: "flex-start" },
+    text: {
+      fontSize: "20px",
+    },
+  })
+);
 export default function Message(props: any) {
   const chatBox = useRef(null);
+  const classes = useStyles();
   const messages = useQuery(MESSAGE_QUERY);
   const [message, setMessage] = useState("");
   const client = useApolloClient();
@@ -56,8 +73,6 @@ export default function Message(props: any) {
   useSubscription(MESSAGE_SUBSCRIPTION, {
     onSubscriptionData: ({ subscriptionData }) => {
       updateCacheWith(subscriptionData.data.newMessage);
-      console.log(subscriptionData);
-      console.log(22);
     },
   });
   const handleChange = async (e: any) => {
@@ -80,16 +95,17 @@ export default function Message(props: any) {
             (item.senderUsername === receiverUsername &&
               item.receiverUsername === username) ? (
               <div
+                className={
+                  username === item.senderUsername
+                    ? classes.sender
+                    : classes.receiver
+                }
                 key={item.id}
-                className={item?.user?.map((a: any) =>
-                  a.username === receiverUsername ? "receiver" : "sender"
-                )}
               >
-                <div className="sender-name">
-                  {item?.user?.map((x: any) => x.name)}
-                </div>
-                {item.message}{" "}
-                {/* <span className="time"> {moment(item.timestamp).fromNow()}</span> */}
+                <Paper elevation={3}>
+                  {item.senderUsername}
+                  {item.message}
+                </Paper>
               </div>
             ) : (
               ""
@@ -98,13 +114,14 @@ export default function Message(props: any) {
         </div>
         {receiverUsername ? (
           <form
+            style={{ bottom: "0px", width: "50%", position: "absolute" }}
             onSubmit={(e) => handleSubmit(e)}
             ref={chatBox}
             className="chat-box"
           >
             <TextField
               style={{ margin: 10 }}
-              placeholder={"Say something to " + receiverUsername}
+              placeholder={"Кажи нещо на " + receiverUsername}
               fullWidth
               name="message"
               value={message}
@@ -118,7 +135,9 @@ export default function Message(props: any) {
           </form>
         ) : (
           <div className="select-message">
-            Select a logged in user from the left panel
+            <Typography style={{ padding: "10px" }} variant="h6">
+              Избери потребител от десния панел. 👉
+            </Typography>
           </div>
         )}
       </div>

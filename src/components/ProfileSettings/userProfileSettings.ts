@@ -4,9 +4,9 @@ export const EDIT_USER = gql`
   mutation editUser(
     $id: String!
     $username: String!
-    $name: String!
-    $profile_image_url: String!
-    $description: String!
+    $name: String
+    $profile_image_url: String
+    $description: String
   ) {
     editUser(
       id: $id

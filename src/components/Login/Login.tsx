@@ -74,8 +74,8 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
     LOGIN,
     {
       onCompleted(data) {
-        enqueueSnackbar(`Welcome ${data.login.user.username}!`, {
-          variant: "success",
+        enqueueSnackbar(`Привет ${data.login.user.username}! 🖖`, {
+          variant: "info",
         });
       },
       onError(error) {
@@ -121,7 +121,7 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
             <Typography component="h1" variant="h5">
               Вход
             </Typography>
-            <form onSubmit={handleLogin} className={classes.form} noValidate>
+            <form onSubmit={handleLogin} className={classes.form}>
               <TextField
                 variant="outlined"
                 value={username}
@@ -160,7 +160,11 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
               <Grid container>
                 <Grid item>
                   <Link
-                    style={{ textDecoration: "none", color: "black" }}
+                    style={{
+                      textDecoration: "none",
+                      color: "black",
+                      fontSize: "16px",
+                    }}
                     to="/register"
                   >
                     Нямаш акаунт? Регистрирай се! 😉

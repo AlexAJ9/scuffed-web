@@ -55,10 +55,10 @@ ReactDOM.render(
     <Router>
       <SnackbarProvider
         iconVariant={{
-          success: "✅",
-          error: "✖️",
+          success: "✅ ",
+          error: "✖️ ",
           warning: "⚠️",
-          info: "ℹ️",
+          info: "",
         }}
         anchorOrigin={{
           vertical: "top",

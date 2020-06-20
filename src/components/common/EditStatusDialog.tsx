@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useSnackbar } from "notistack";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE } from "../status/statusMutations";
@@ -53,12 +53,18 @@ interface Props {
 }
 export default function DeleteDialog({ id, text }: Props) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
 
   const [statusText, setStatusText] = useState(text);
 
   const [update, result] = useMutation(UPDATE, {
     refetchQueries: [{ query: All_STATUSES }],
+    onCompleted: (data) => {
+      enqueueSnackbar(`Успешно промени публикация! 🛸`, {
+        variant: "success",
+      });
+    },
     onError: (error) => {
       console.log(error);
     },
@@ -93,7 +99,7 @@ export default function DeleteDialog({ id, text }: Props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Update post</DialogTitle>
+        <DialogTitle id="form-dialog-title">Промени публикация</DialogTitle>
         <Container className={classes.box}>
           <form noValidate autoComplete="off">
             <div className={classes.content}>
@@ -114,10 +120,10 @@ export default function DeleteDialog({ id, text }: Props) {
             </div>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
-                Cancel
+                Отказ
               </Button>
               <Button onClick={handleSubmit} color="primary">
-                Update
+                Ок
               </Button>
             </DialogActions>
           </form>

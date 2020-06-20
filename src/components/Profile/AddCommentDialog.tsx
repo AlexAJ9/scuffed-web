@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 
-import { useMutation, useSubscription, useApolloClient } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
-import { COMMENT, ADD_COMMENT } from "../status/statusMutations";
+import { COMMENT } from "../status/statusMutations";
 import { All_STATUSES } from "../status/statusQueries";
-
+import { useSnackbar } from "notistack";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import ReplyIcon from "@material-ui/icons/Reply";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 
 interface Props {
   id: string;
@@ -21,13 +18,21 @@ interface Props {
   text: string;
 }
 export default function CommnetDialog({ id, username, text }: Props) {
-  const client = useApolloClient();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
 
   const [comment, result] = useMutation(COMMENT, {
+    refetchQueries: [{ query: All_STATUSES }],
+    onCompleted: (data) => {
+      enqueueSnackbar(`Успешно добавихте коментар!`, {
+        variant: "success",
+      });
+    },
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar(`Грешка `, {
+        variant: "error",
+      });
     },
   });
 
@@ -45,9 +50,7 @@ export default function CommnetDialog({ id, username, text }: Props) {
   };
   return (
     <>
-      <IconButton onClick={handleClickOpen}>
-        <ReplyIcon fontSize="small" />
-      </IconButton>
+      <Button onClick={handleClickOpen}>Кометирай</Button>
 
       <Dialog
         fullWidth={true}
@@ -57,24 +60,28 @@ export default function CommnetDialog({ id, username, text }: Props) {
         aria-labelledby="form-dialog-title"
       >
         <DialogContent>
-          <DialogTitle>Replying to {username}</DialogTitle>
-          <DialogContentText>{text}</DialogContentText>
+          <p style={{ fontWeight: "bold", fontSize: "18px", color: "#25a9f0" }}>
+            Напиши коментар на {username}.
+          </p>
+          <DialogContentText>
+            {username} написа {text}.
+          </DialogContentText>
           <TextField
             value={commentText}
             onChange={({ target }) => setCommentText(target.value)}
             fullWidth
             id="outlined-textarea"
-            label="Enter your reply"
+            label="Въведи коментар тук..."
             multiline
             variant="outlined"
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            Отказ
           </Button>
           <Button onClick={handleComment} color="primary">
-            Reply
+            Отговор
           </Button>
         </DialogActions>
       </Dialog>

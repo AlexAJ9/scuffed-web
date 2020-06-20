@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const LIKE = gql`
   mutation likeStatus($id: String!) {
-    likesStatus(id: $id) {
+    likeStatus(id: $id) {
       id
       likes
     }

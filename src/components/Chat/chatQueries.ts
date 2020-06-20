@@ -38,7 +38,7 @@ export const CREATE_MESSAGE_MUTATION = gql`
       senderUsername
       receiverUsername
       id
-
+      timestamp
       user {
         username
       }

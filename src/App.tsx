@@ -10,13 +10,14 @@ import Register from "./components/Register/Register";
 import Profile from "./components/Profile/UserProfile";
 import Settings from "./components/ProfileSettings/ProfileSettings";
 import Drawer from "./components/Layout/Drawer";
+import CreateStatus from "./components/status/CreateStatus";
 import NewDrawer from "./components/Layout/NewDrawer";
 import CurrnetUser from "./components/Layout/CurrentUser";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import Chat from "./components/Chat/Chat";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider, makeStyles } from "@material-ui/styles";
-
+import Nav from "./components/Layout/BottomNav";
 import { createMuiTheme } from "@material-ui/core/styles";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
@@ -32,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
 const darkTheme = createMuiTheme({
   palette: {
     background: {
-      default: "#15202b",
-      paper: "#15202b",
+      default: "#240e28",
+      paper: "#521a4a",
     },
     text: {
       primary: "#fff",
@@ -55,8 +56,8 @@ const lightTheme = createMuiTheme({
       paper: "#fff",
     },
     text: {
-      primary: "#000000",
-      secondary: "#1da1f2",
+      primary: "#25a9f0",
+      secondary: "#240e28",
     },
     secondary: {
       main: "#e0245e",
@@ -144,6 +145,7 @@ function App() {
         {token ? (
           <>
             <Drawer handleChangeTheme={handleChangeTheme} logout={logout} />
+            <CreateStatus />
             {/* <NewDrawer handleChangeTheme={handleChangeTheme} logout={logout} /> */}
           </>
         ) : (

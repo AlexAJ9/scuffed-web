@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 import { useQuery, useMutation } from "@apollo/client";
 
@@ -36,10 +37,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     componentContainer: {
       border: "1px solid",
-      borderColor:
-        theme.palette.type === "light"
-          ? "#0000001f !important"
-          : "rgba(255, 255, 255, 0.12)",
+      borderColor: "#25a9f066",
+
       height: "100vh",
     },
     inline: {
@@ -58,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Status() {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const id = localStorage.getItem("user-id");
   const user = useQuery(USER_PROFILE, { variables: { id } });
 
@@ -70,6 +70,13 @@ export default function Status() {
   const [image, setImage] = useState<File>();
   const [update, result] = useMutation(EDIT_USER, {
     refetchQueries: [{ query: USER_PROFILE, variables: { id: id } }],
+    onCompleted: (data) => {
+      console.log(data);
+
+      enqueueSnackbar(`Успешно обнови профила си! 💯`, {
+        variant: "success",
+      });
+    },
     onError: (error) => {
       console.log(error);
     },
@@ -81,6 +88,18 @@ export default function Status() {
     setBio(user.data?.getUserInfo.description);
   }, [user]);
 
+  const handleChange = (target: EventTarget & HTMLInputElement) => {
+    if (target.files !== null) {
+      var file = target.files[0];
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(file);
+      reader.onloadend = function (e) {
+        setAvatar(reader.result);
+      };
+      setAvatar(target.files[0]);
+      setImage(target.files[0]);
+    }
+  };
   const handleSubmit = async () => {
     const formData = new FormData();
     if (image !== undefined) formData.append("file", image);
@@ -101,16 +120,16 @@ export default function Status() {
           profile_image_url: response?.data.url,
         },
       });
-    }
-    update({
-      variables: {
-        id: id,
-        name: name,
-        username: username,
-        description: bio,
-        profile_image_url: avatar,
-      },
-    });
+    } else
+      update({
+        variables: {
+          id: id,
+          name: name,
+          username: username,
+          description: bio,
+          profile_image_url: avatar,
+        },
+      });
   };
   return (
     <Container className={classes.componentContainer} maxWidth="sm">
@@ -120,9 +139,9 @@ export default function Status() {
         <Grid item xs={12} className={classes.avatar}>
           <IconButton>
             <input
-              onChange={({ target }) =>
-                target.files ? setImage(target.files[0]) : null
-              }
+              onChange={({ target }) => {
+                handleChange(target);
+              }}
               style={{ display: "none" }}
               id="icon-button-file"
               type="file"
@@ -142,9 +161,8 @@ export default function Status() {
             onChange={({ target }) => setName(target.value)}
             id="outlined-basic"
             fullWidth
-            label="Name"
+            label="Име"
             variant="outlined"
-            defaultValue="Add your name"
           />
         </Grid>
 
@@ -154,9 +172,8 @@ export default function Status() {
             onChange={({ target }) => setUsername(target.value)}
             id="outlined-basic"
             fullWidth
-            label="Username"
+            label="Потребителско име"
             variant="outlined"
-            defaultValue="Add your username"
           />
         </Grid>
 
@@ -165,17 +182,16 @@ export default function Status() {
             value={bio}
             onChange={({ target }) => setBio(target.value)}
             id="outlined-multiline-static"
-            label="Bio"
+            label="Описание"
             fullWidth
             multiline
             rows={3}
-            defaultValue="Add your bio"
             variant="outlined"
           />
         </Grid>
         <Grid item xs={12}>
           <Button onClick={handleSubmit} variant="contained" color="primary">
-            Save
+            Запази
           </Button>
         </Grid>
       </Grid>

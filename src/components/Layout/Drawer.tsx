@@ -18,10 +18,10 @@ import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import PeopleOutlineOutlinedIcon from "@material-ui/icons/PeopleOutlineOutlined";
-
+import MessageTwoToneIcon from "@material-ui/icons/MessageTwoTone";
 import CurrentUser from "./CurrentUser";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
     },
     link: {
+      textDecoration: "none",
+      color: "black",
       all: "unset",
       display: "flex",
       justifyContent: "center",
@@ -50,11 +52,11 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
-      padding: theme.spacing(3),
+      padding: theme.spacing(2),
     },
     text: {
       fontWeight: "bolder",
-      fontSize: "20px",
+      fontSize: "16px",
     },
   })
 );
@@ -75,8 +77,6 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
         }}
         anchor="left"
       >
-        <div className={classes.toolbar} />
-        <Divider />
         <List>
           <ListItem button>
             <Link to="/" className={classes.link}>
@@ -123,7 +123,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
             <Link className={classes.link} to="/chat">
               <ListItemIcon>
                 <IconButton>
-                  <MessageOutlinedIcon color="primary" />
+                  <MessageTwoToneIcon color="primary" />
                 </IconButton>
               </ListItemIcon>
               <ListItemText
@@ -154,7 +154,12 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
             </ListItemIcon>
             <ListItemText
               primary={
-                <Typography className={classes.text}>Display</Typography>
+                <Typography
+                  style={{ color: "#ff48c4" }}
+                  className={classes.text}
+                >
+                  Display
+                </Typography>
               }
             />
           </ListItem>
@@ -172,13 +177,14 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
               />
             </Link>
           </ListItem>
-          <ListItem onClick={logout} button>
+          <ListItem className={classes.root} onClick={logout} button>
             <ListItemIcon>
               <IconButton>
                 <ExitToAppOutlinedIcon color="primary" />
               </IconButton>
             </ListItemIcon>
             <ListItemText
+              className={classes.link}
               primary={
                 <Typography className={classes.text}>Log out</Typography>
               }

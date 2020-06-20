@@ -7,6 +7,8 @@ import {
   useApolloClient,
 } from "@apollo/client";
 
+import Loader from "../Loader/Loader";
+
 import { USER_PROFILE } from "../Profile/userProfileQueries";
 import { All_STATUSES } from "./statusQueries";
 import { CREATE_STATUS, STATUS_ADDED } from "./statusMutations";
@@ -33,10 +35,14 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: "bold",
     },
     box: {
+      position: "fixed",
+      width: "400px",
+      top: "125px",
+      right: "10px",
       padding: "30px",
-      borderBottom: "solid 1px",
-      borderTop: "solid 1px",
-      borderColor: "#e8d6d6 !important",
+      border: "solid 1px",
+      borderRadius: "20px",
+      borderColor: "#2bd1fc !important",
     },
     content: {
       display: "flex",
@@ -44,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
     itemEnd: {
       display: "flex",
       justifyContent: "flex-end",
+      color: "#fff",
       flex: 2,
     },
     flexItem: {
@@ -71,9 +78,11 @@ export default function CreateStatus() {
     setAvatar(user.data?.getUserInfo.profile_image_url);
   }, [user]);
 
-  const [create, _result] = useMutation(CREATE_STATUS, {
+  const [create, { loading: mutationLoading }] = useMutation(CREATE_STATUS, {
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar("Възникна проблем. Пробвайте отновo!", {
+        variant: "error",
+      });
     },
   });
 
@@ -94,14 +103,23 @@ export default function CreateStatus() {
 
   useSubscription(STATUS_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      enqueueSnackbar("Successfully created a post!", { variant: "success" });
+      enqueueSnackbar("Успешно направихте публикация! 🙂", {
+        variant: "success",
+      });
       updateCacheWith(subscriptionData.data.newStatus);
     },
   });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (status_text === "") {
+      enqueueSnackbar("Възникна проблем. Пробвайте отновo!", {
+        variant: "error",
+      });
+      return;
+    }
     const formData = new FormData();
+
     if (image !== undefined) formData.append("file", image);
     formData.append("upload_preset", "pxs3cjzn");
 
@@ -122,6 +140,7 @@ export default function CreateStatus() {
 
   return (
     <Container className={classes.box}>
+      {mutationLoading ?? <Loader />}
       <form noValidate autoComplete="off">
         <div className={classes.content}>
           <Avatar className={classes.flexItem} alt="user" src={`${avatar}`} />
@@ -131,7 +150,7 @@ export default function CreateStatus() {
             value={status_text}
             onChange={({ target }) => setStatusText(target.value)}
             id="outlined-textarea"
-            placeholder={`What's happening, ${username}?`}
+            placeholder={`Сподели нещо интересно ${username}!`}
             multiline
           />
         </div>
@@ -153,15 +172,16 @@ export default function CreateStatus() {
             >
               <CloudUploadIcon />
             </IconButton>
+            Прикачи снимка!
           </label>
           <div className={classes.itemEnd}>
             <Button
-              size="small"
-              variant="outlined"
-              color="primary"
               onClick={handleSubmit}
+              style={{ color: "#fff", fontSize: "10px" }}
+              variant="contained"
+              color="primary"
             >
-              Post
+              Публикувай
             </Button>
           </div>
         </div>

@@ -1,36 +1,18 @@
 import React, { useState } from "react";
-import Image from "material-ui-image";
-
+import { useSnackbar } from "notistack";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { LIKE } from "../Favourites/likeStatusMutation";
 import { USER_PROFILE } from "../Profile/userProfileQueries";
-import { All_STATUSES } from "../status/statusQueries";
+import { ALL_USERS } from "./friendsQuery";
 import { ADD_FRIEND } from "../Friends/addFriendMutation";
 
 import Header from "../Header/Header";
-
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import Avatar from "@material-ui/core/Avatar";
-import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
-import PersonAddDisabledOutlinedIcon from "@material-ui/icons/PersonAddDisabledOutlined";
-
-import CreateStatus from "../status/CreateStatus";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     statusBox: {
@@ -51,12 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     componentContainer: {
       border: "1px solid",
-      borderColor:
-        theme.palette.type === "light"
-          ? "#0000001f !important"
-          : "rgba(255, 255, 255, 0.12)",
+      borderColor: "#25a9f066",
 
-      height: "100%",
+      height: "100vh",
     },
     inline: {
       display: "inline",
@@ -70,30 +49,73 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Status() {
   const classes = useStyles();
-
+  const { enqueueSnackbar } = useSnackbar();
   const id = localStorage.getItem("user-id");
 
   const user = useQuery(USER_PROFILE, { variables: { id } });
-
+  const friends = useQuery(ALL_USERS);
   const [friend, friendResult] = useMutation(ADD_FRIEND, {
+    refetchQueries: [{ query: ALL_USERS }],
+    onCompleted: (data) => {
+      console.log(data);
+
+      enqueueSnackbar(`Успешно премахна приятел!`, {
+        variant: "success",
+      });
+    },
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar("Възникна проблем. Пробвайте отновo!", {
+        variant: "error",
+      });
     },
   });
 
-  const handleAddFriend = (id: string) => {
-    console.log(id + "id");
+  const handleRemoveFriend = (id: string) => {
     friend({ variables: { id: id } });
   };
 
   return (
     <Container className={classes.componentContainer} maxWidth="sm">
-      <Header title={"Friends"} />
-      {user.data.getUserInfo.friends.map((friend: any) => (
-        <Typography className={classes.title} variant="h5">
-          {friend}
-        </Typography>
-      ))}
+      <Header title={"Приятели"} />
+      <Typography className={classes.title} variant="h4">
+        Брой последвани {user.data?.getUserInfo.friends.length}
+      </Typography>
+      {user.data?.getUserInfo.friends.map((friend: any) =>
+        friends.data?.allUsers.map((user: any) =>
+          user.id === friend ? (
+            <>
+              <div style={{ display: "flex" }}>
+                <Typography className={classes.title} variant="h5">
+                  {user.username}
+                </Typography>
+                <div className={classes.title} style={{ marginTop: "6px" }}>
+                  {user.friends.length} приятели
+                </div>
+              </div>
+              <Chip
+                style={{ color: "#fff" }}
+                label="Премахни от приятели"
+                onClick={() => {
+                  handleRemoveFriend(user.id);
+                }}
+                color="primary"
+              />
+
+              {user.friends.includes(id) ? (
+                <div style={{ marginLeft: "5px" }}>
+                  <p>Следава те 🎉</p>
+                </div>
+              ) : (
+                <div style={{ marginLeft: "5px" }}>
+                  <p>Не те следва 🤷‍♀</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <></>
+          )
+        )
+      )}
     </Container>
   );
 }

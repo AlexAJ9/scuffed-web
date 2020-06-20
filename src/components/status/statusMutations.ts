@@ -20,8 +20,8 @@ export const DELETE_STATUS = gql`
 `;
 
 export const COMMENT = gql`
-  mutation comment($id: String!, $comment: String!) {
-    comment(id: $id, comment: $comment) {
+  mutation addComment($id: String!, $comment: String!) {
+    addComment(id: $id, comment: $comment) {
       id
     }
   }
@@ -68,25 +68,25 @@ export const ADD_COMMENT = gql`
 `;
 export const LIKE = gql`
   mutation likeStatus($id: String!) {
-    likesStatus(id: $id) {
+    likeStatus(id: $id) {
       id
       likes
     }
   }
 `;
-export const ADD_LIKE = gql`
-  subscription {
-    likeStatus {
-      id
-      status_text
-      status_picture_url
-      comments {
-        user
-        text
-      }
-      userId
-      username
-      likes
-    }
-  }
-`;
+// export const ADD_LIKE = gql`
+//   subscription {
+//     likeStatus {
+//       id
+//       status_text
+//       status_picture_url
+//       comments {
+//         user
+//         text
+//       }
+//       userId
+//       username
+//       likes
+//     }
+//   }
+// `;

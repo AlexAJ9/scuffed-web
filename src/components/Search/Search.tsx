@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
+
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-
-import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
 import {
   createStyles,
   fade,
@@ -12,16 +11,12 @@ import {
   makeStyles,
 } from "@material-ui/core/styles";
 
-import SearchIcon from "@material-ui/icons/Search";
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      position: "fixed",
-      right: "10px",
-      top: "30px",
-      width: "20%",
+      borderRadius: "10px",
+      position: "sticky",
     },
 
     search: {
@@ -79,8 +74,8 @@ export default function SearchBar({ filter, setFilter }: Props) {
     setFilter(e.target.value);
   };
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
+    <div>
+      <AppBar className={classes.root} position="static">
         <Toolbar>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -88,7 +83,7 @@ export default function SearchBar({ filter, setFilter }: Props) {
             </div>
             <InputBase
               onChange={(e) => handleChange(e)}
-              placeholder="Search…"
+              placeholder="Търси..."
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,

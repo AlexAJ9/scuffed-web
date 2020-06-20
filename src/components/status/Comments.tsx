@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "material-ui-image";
 import { useQuery } from "@apollo/client";
-import CreateStatus from "./CreateStatus";
+
 import { All_STATUSES } from "./statusQueries";
 
 import Typography from "@material-ui/core/Typography";
@@ -34,11 +34,10 @@ export default function Status() {
           <Typography className={classes.title} variant="h5">
             {x.username}
           </Typography>
-          <Typography variant="h6">{x.status_text}</Typography>
+          <Typography variant="h6">написа: {x.status_text}</Typography>
           {x.status_picture_url ? <Image src={x.status_picture_url} /> : <></>}
         </Paper>
       ))}
-      <CreateStatus />
     </Container>
   );
 }

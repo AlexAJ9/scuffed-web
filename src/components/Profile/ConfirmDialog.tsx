@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useSnackbar } from "notistack";
 import { useMutation } from "@apollo/client";
 
 import { All_STATUSES } from "../status/statusQueries";
@@ -19,10 +19,16 @@ interface Props {
   id: string;
 }
 export default function DeleteDialog({ id }: Props) {
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
 
   const [remove, result] = useMutation(DELETE_STATUS, {
     refetchQueries: [{ query: All_STATUSES }],
+    onCompleted: (data) => {
+      enqueueSnackbar(`Успешно изтрихте публикация! 👀`, {
+        variant: "success",
+      });
+    },
     onError: (error) => {
       //   console.log(error);
     },
@@ -43,7 +49,7 @@ export default function DeleteDialog({ id }: Props) {
   return (
     <>
       <IconButton onClick={handleClickOpen}>
-        <DeleteForeverIcon />
+        <DeleteForeverIcon color="secondary" />
       </IconButton>
 
       <Dialog
@@ -51,18 +57,20 @@ export default function DeleteDialog({ id }: Props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Delete post</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Изтриване на публикация
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this post?
+            Сигурни ли сте, че искате да изтриете тази публикация?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            Отказ
           </Button>
           <Button onClick={() => deleteStatus(id)} color="primary">
-            Delete
+            Изтрий
           </Button>
         </DialogActions>
       </Dialog>
