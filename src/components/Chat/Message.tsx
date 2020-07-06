@@ -17,16 +17,25 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-
+import Chip from "@material-ui/core/Chip";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     sender: {
       display: "flex",
+
       justifyContent: "flex-end",
     },
     receiver: { display: "flex", justifyContent: "flex-start" },
     text: {
       fontSize: "20px",
+    },
+    senderChip: {
+      margin: "10px",
+      backgroundColor: "#1da1f2",
+      color: "#fff",
+    },
+    receiverChip: {
+      margin: "10px",
     },
   })
 );
@@ -88,7 +97,7 @@ export default function Message(props: any) {
             <div className="bar3" />
           </div>
         </div>
-        <div className="all-messages">
+        <div className="all-messages" style={{ margin: "10px" }}>
           {messages?.data?.messages.map((item: any) =>
             (item.senderUsername === username &&
               item.receiverUsername === receiverUsername) ||
@@ -102,10 +111,14 @@ export default function Message(props: any) {
                 }
                 key={item.id}
               >
-                <Paper elevation={3}>
-                  {item.senderUsername}
-                  {item.message}
-                </Paper>
+                <Chip
+                  className={
+                    username === item.senderUsername
+                      ? classes.senderChip
+                      : classes.receiverChip
+                  }
+                  label={item.message}
+                />
               </div>
             ) : (
               ""

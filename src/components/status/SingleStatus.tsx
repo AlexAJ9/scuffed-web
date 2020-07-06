@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import Image from "material-ui-image";
 
@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     statusBox: {
       margin: "10px",
-      border: "solid 2px",
-      borderRadius: "20px",
+      // border: "solid 2px",
+      // borderRadius: "5px",
       padding: "5px",
       width: "90%",
     },
@@ -54,6 +54,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: theme.palette.background.paper,
+      border: "1px solid",
+      borderColor:
+        theme.palette.type === "light"
+          ? "#0000001f !important"
+          : "rgba(255, 255, 255, 0.12)",
     },
     card: {
       width: "80%",
@@ -77,6 +82,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "flex-end",
     },
+    avatar: {
+      marginRight: "10px",
+      width: theme.spacing(4),
+      height: theme.spacing(4),
+    },
   })
 );
 
@@ -87,7 +97,7 @@ export default function Status({ status }: Props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
-
+  const [imageId, setImageId] = useState(false);
   const handleClick = () => {
     setOpen(!open);
   };
@@ -96,19 +106,30 @@ export default function Status({ status }: Props) {
 
   const id = localStorage.getItem("user-id");
   const userId = useQuery(USER_PROFILE, { variables: { id } });
-
+  const userProfilePicture = useQuery(USER_PROFILE, {
+    variables: { id: status.userId },
+  });
   const [liked, setLiked] = useState(
     userId?.data?.getUserInfo?.favorites?.includes(status.id)
   );
   const [like, result] = useMutation(LIKE, {
-    refetchQueries: [{ query: All_STATUSES }],
+    refetchQueries: [
+      { query: All_STATUSES },
+      { query: USER_PROFILE, variables: { id: id } },
+    ],
+    onCompleted: (data) => {
+      console.log(data);
+    },
 
     onError: (error) => {
       enqueueSnackbar("Възникна проблем. Пробвайте отновo!", {
         variant: "error",
       });
+      console.log(error);
     },
   });
+  console.log(userProfilePicture.data?.getUserInfo.profile_image_url);
+
   const [friend, friendResult] = useMutation(ADD_FRIEND, {
     refetchQueries: [{ query: All_STATUSES }],
     onCompleted: (data) => {
@@ -123,6 +144,7 @@ export default function Status({ status }: Props) {
     },
   });
   const handleLike = (statusId: string) => {
+    console.log(status.id, statusId);
     setLiked(!liked);
     like({ variables: { id: statusId } });
   };
@@ -138,9 +160,15 @@ export default function Status({ status }: Props) {
     <div className={classes.root}>
       <div className={classes.statusBox}>
         <div style={{ display: "flex", padding: "10px" }}>
-          <Typography className={classes.title} variant="h5">
+          <Avatar
+            className={classes.avatar}
+            alt="Cindy Baker"
+            src={`${userProfilePicture.data?.getUserInfo.profile_image_url}`}
+          />
+          <Typography className={classes.title} variant="h6">
             {status.username}
           </Typography>
+
           <div className={classes.itemEnd}>
             {id !== status.userId ? (
               userId.data?.getUserInfo.friends?.includes(status.userId) ? (
@@ -170,7 +198,7 @@ export default function Status({ status }: Props) {
           </div>
         </div>
 
-        <Typography style={{ padding: "10px" }} variant="h6">
+        <Typography style={{ padding: "10px", color: "#05334c" }} variant="h6">
           {status.status_text}
         </Typography>
         {status.status_picture_url ? (
@@ -180,7 +208,7 @@ export default function Status({ status }: Props) {
         )}
 
         <div className={classes.toolbar}>
-          <IconButton onClick={() => handleLike(status.id)}>
+          <IconButton onClick={() => handleLike(status?.id)}>
             {liked ? (
               <FavoriteIcon color="secondary" />
             ) : (
@@ -189,7 +217,11 @@ export default function Status({ status }: Props) {
           </IconButton>
 
           <IconButton onClick={handleClick}>
-            {open ? <ExpandLess /> : <ChatIcon />}
+            {open ? (
+              <ExpandLess color="secondary" />
+            ) : (
+              <ChatIcon color="secondary" />
+            )}
           </IconButton>
 
           <AddCommentDialog

@@ -18,7 +18,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="chat-page">
+    <div className="chat-page" style={{ zIndex: 9999 }}>
       <UserSidebar
         username={user?.data?.getUserInfo.username}
         selectedUsername={setSelectedUsername}

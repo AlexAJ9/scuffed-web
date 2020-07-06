@@ -16,7 +16,15 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
       borderRadius: "10px",
-      position: "sticky",
+
+      position: "absolute",
+      top: "20px",
+      right: "10px",
+      width: "400px",
+      backgroundColor: theme.palette.type === "light" ? "#fff" : "#000",
+      color: theme.palette.type === "light" ? "#000" : "#fff",
+      borderColor: "#2bd1fc !important",
+      border: "solid 1px",
     },
 
     search: {

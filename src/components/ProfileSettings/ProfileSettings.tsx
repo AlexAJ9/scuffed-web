@@ -133,7 +133,7 @@ export default function Status() {
   };
   return (
     <Container className={classes.componentContainer} maxWidth="sm">
-      <Header title={"Edit profile"} />
+      <Header title={"Настройка на профил"} />
 
       <Grid container spacing={4}>
         <Grid item xs={12} className={classes.avatar}>
@@ -185,7 +185,7 @@ export default function Status() {
             label="Описание"
             fullWidth
             multiline
-            rows={3}
+            rows={7}
             variant="outlined"
           />
         </Grid>

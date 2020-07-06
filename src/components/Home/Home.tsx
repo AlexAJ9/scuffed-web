@@ -6,7 +6,7 @@ import { All_STATUSES } from "../status/statusQueries";
 import Search from "../Search/Search";
 import Header from "../Header/Header";
 import SingleStatus from "../status/SingleStatus";
-
+import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
@@ -40,6 +40,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "flex-end",
     },
+    searchBar: {
+      top: "20px",
+      right: "10px",
+      width: "400px",
+      position: "absolute",
+      flexGrow: 1,
+      borderRadius: " 10px",
+    },
   })
 );
 
@@ -57,10 +65,16 @@ export default function Status() {
     <Container className={classes.componentContainer} maxWidth="sm">
       <Header title={"Начало"} />
 
+      <Typography variant="h5" gutterBottom className={classes.title}>
+        Всички скорошни публикации 🌊
+      </Typography>
+
       <Search filter={filter} setFilter={setFilter} />
-      {all_statuses.data.allStatuses
+      {all_statuses?.data.allStatuses
         .filter((x: any) =>
-          filter !== "" ? x.status_text.includes(filter) : x
+          filter !== ""
+            ? x.status_text.toLowerCase().includes(filter.toLowerCase())
+            : x
         )
         .map((x: any) => (
           <SingleStatus status={x} />

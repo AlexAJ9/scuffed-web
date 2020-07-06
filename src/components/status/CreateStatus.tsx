@@ -79,6 +79,7 @@ export default function CreateStatus() {
   }, [user]);
 
   const [create, { loading: mutationLoading }] = useMutation(CREATE_STATUS, {
+    refetchQueries: [{ query: All_STATUSES }],
     onError: (error) => {
       enqueueSnackbar("Възникна проблем. Пробвайте отновo!", {
         variant: "error",
@@ -92,8 +93,7 @@ export default function CreateStatus() {
 
     const dataInStore = client.readQuery({ query: All_STATUSES });
     if (!includedIn(dataInStore.allStatuses, addedStatus)) {
-      console.log(dataInStore.allStatuses);
-
+      console.log("here");
       client.writeQuery({
         query: All_STATUSES,
         data: { allStatuses: dataInStore.allStatuses.concat(addedStatus) },

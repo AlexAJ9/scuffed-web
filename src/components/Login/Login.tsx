@@ -88,10 +88,7 @@ export default function SignIn({ setToken, setErrorMessage, token }: Props) {
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
-    setLoader(true);
-    setTimeout(() => {
-      setLoader(false);
-    }, 20000000);
+
     login({ variables: { username, password } });
   };
 

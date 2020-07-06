@@ -46,7 +46,7 @@ export default function Status() {
         Всички твой харесвнаия 💕
       </Typography>
       <Typography className={classes.title} variant="h6">
-        Брой харесani публикации: {userId.data?.getUserInfo.favorites.length}
+        Брой харесани публикации: {userId.data?.getUserInfo.favorites.length}
       </Typography>
 
       {all_statuses.data.allStatuses

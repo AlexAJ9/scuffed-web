@@ -20,6 +20,7 @@ import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import PeopleOutlineOutlinedIcon from "@material-ui/icons/PeopleOutlineOutlined";
 import MessageTwoToneIcon from "@material-ui/icons/MessageTwoTone";
 import CurrentUser from "./CurrentUser";
+import WavesIcon from "@material-ui/icons/Waves";
 
 const drawerWidth = 200;
 
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
     text: {
       fontWeight: "bolder",
       fontSize: "16px",
+      color: theme.palette.text.primary,
     },
   })
 );
@@ -78,6 +80,17 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
         anchor="left"
       >
         <List>
+          <ListItem
+            style={{ display: "flex", justifyContent: "center" }}
+            button
+          >
+            <ListItemIcon>
+              <IconButton>
+                <WavesIcon color="primary" />
+              </IconButton>
+            </ListItemIcon>
+          </ListItem>
+          <Divider />
           <ListItem button>
             <Link to="/" className={classes.link}>
               <ListItemIcon>
@@ -86,7 +99,11 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
                 </IconButton>
               </ListItemIcon>
               <ListItemText
-                primary={<Typography className={classes.text}>Home</Typography>}
+                primary={
+                  <Typography className={classes.text}>
+                    Начална страница
+                  </Typography>
+                }
               />
             </Link>
           </ListItem>
@@ -100,7 +117,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography className={classes.text}>Profile</Typography>
+                  <Typography className={classes.text}>Профил</Typography>
                 }
               />
             </Link>
@@ -114,7 +131,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography className={classes.text}>Friends</Typography>
+                  <Typography className={classes.text}>Приятели</Typography>
                 }
               />
             </Link>
@@ -127,7 +144,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
                 </IconButton>
               </ListItemIcon>
               <ListItemText
-                primary={<Typography className={classes.text}>Chat</Typography>}
+                primary={<Typography className={classes.text}>Чат</Typography>}
               />
             </Link>
           </ListItem>
@@ -140,7 +157,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography className={classes.text}>Likes</Typography>
+                  <Typography className={classes.text}>Харесвания</Typography>
                 }
               />
             </Link>
@@ -154,12 +171,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
             </ListItemIcon>
             <ListItemText
               primary={
-                <Typography
-                  style={{ color: "#ff48c4" }}
-                  className={classes.text}
-                >
-                  Display
-                </Typography>
+                <Typography className={classes.text}>Светла тема</Typography>
               }
             />
           </ListItem>
@@ -172,7 +184,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography className={classes.text}>Settings</Typography>
+                  <Typography className={classes.text}>Настройки</Typography>
                 }
               />
             </Link>
@@ -185,9 +197,7 @@ export default function SideDrawer({ handleChangeTheme, logout }: Props) {
             </ListItemIcon>
             <ListItemText
               className={classes.link}
-              primary={
-                <Typography className={classes.text}>Log out</Typography>
-              }
+              primary={<Typography className={classes.text}>Изход</Typography>}
             />
           </ListItem>
           <ListItem>
