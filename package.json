@@ -16,7 +16,7 @@
     "@types/react-loader-spinner": "^3.1.0",
     "@types/react-router-dom": "^5.1.4",
     "apollo-link-context": "^1.0.20",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "graphql": "^15.0.0",
     "material-ui-image": "^3.2.3",
     "notistack": "^0.9.17",
